@@ -327,9 +327,50 @@ export class ElementAssetTreeComponent implements OnInit, OnDestroy {
     return menuList;
   }
 
+  reAsyncChildNodes(treeId, treeNode, silent) {
+    if (treeNode && treeNode.isParent && treeNode.children) {
+      for (let i = 0; i < treeNode.children.length; i++) {
+        const childNode = treeNode.children[i];
+        const self = this;
+        this[treeId].reAsyncChildNodesPromise(childNode, 'refresh', silent).then(function () {
+          self.reAsyncChildNodes(treeId, childNode, silent);
+        });
+      }
+    }
+  }
+
+  expandAllChildren(treeId, treeNode, expandFlag) {
+    if (expandFlag === treeNode.open) {
+      return;
+    }
+    // 异步加载时需要加载全部子节点
+    const self = this;
+    if (this[treeId].setting.async.enable && (!treeNode.children || treeNode.children.length === 0)) {
+      this[treeId].reAsyncChildNodesPromise(treeNode, 'refresh', false).then(function () {
+        self.reAsyncChildNodes(treeId, treeNode, false);
+      });
+    } else {
+      // 展开时递归展开，放置用户手动展开子级折叠后无法再次展开孙子级
+      if (expandFlag) {
+        this[treeId].expandNode(treeNode, expandFlag, false, true, false);
+        if (treeNode.children && treeNode.children.length > 0) {
+          treeNode.children.forEach(function(childNode) {
+            self.expandAllChildren(treeId, childNode, expandFlag);
+          });
+        }
+      } else {
+        this[treeId].expandNode(treeNode, expandFlag, true, true, false);
+      }
+    }
+  }
+
   onRightClick(event, treeId, treeNode) {
-    if (!treeNode || treeNode.isParent) {
+    if (!treeNode) {
       return null;
+    }
+    if (treeNode.isParent) {
+      this.expandAllChildren(treeId, treeNode, !treeNode.open);
+      return;
     }
     this.rightClickSelectNode = treeNode;
 
