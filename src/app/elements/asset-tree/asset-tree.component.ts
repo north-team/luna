@@ -298,7 +298,8 @@ export class ElementAssetTreeComponent implements OnInit, OnDestroy {
       for (let i = 0; i < treeNode.children.length; i++) {
         const childNode = treeNode.children[i];
         const self = this;
-        this[treeId].reAsyncChildNodesPromise(childNode, 'refresh', silent).then(function () {
+        const targetTree = $.fn.zTree.getZTreeObj(treeId);
+        targetTree.reAsyncChildNodesPromise(childNode, 'refresh', silent).then(function () {
           self.reAsyncChildNodes(treeId, childNode, silent);
         });
       }
@@ -311,21 +312,22 @@ export class ElementAssetTreeComponent implements OnInit, OnDestroy {
     }
     // 异步加载时需要加载全部子节点
     const self = this;
-    if (this[treeId].setting.async.enable && (!treeNode.children || treeNode.children.length === 0)) {
-      this[treeId].reAsyncChildNodesPromise(treeNode, 'refresh', false).then(function () {
+    const targetTree = $.fn.zTree.getZTreeObj(treeId);
+    if (targetTree.setting.async.enable && (!treeNode.children || treeNode.children.length === 0)) {
+      targetTree.reAsyncChildNodesPromise(treeNode, 'refresh', false).then(function () {
         self.reAsyncChildNodes(treeId, treeNode, false);
       });
     } else {
-      // 展开时递归展开，放置用户手动展开子级折叠后无法再次展开孙子级
+      // 展开时递归展开，防止用户手动展开子级折叠后无法再次展开孙子级
       if (expandFlag) {
-        this[treeId].expandNode(treeNode, expandFlag, false, false, false);
+        targetTree.expandNode(treeNode, expandFlag, false, false, false);
         if (treeNode.children && treeNode.children.length > 0) {
           treeNode.children.forEach(function(childNode) {
             self.expandAllChildren(treeId, childNode, expandFlag);
           });
         }
       } else {
-        this[treeId].expandNode(treeNode, expandFlag, true, false, false);
+        targetTree.expandNode(treeNode, expandFlag, true, false, false);
       }
     }
   }
