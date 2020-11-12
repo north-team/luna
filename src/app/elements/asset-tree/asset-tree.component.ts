@@ -318,14 +318,14 @@ export class ElementAssetTreeComponent implements OnInit, OnDestroy {
     } else {
       // 展开时递归展开，放置用户手动展开子级折叠后无法再次展开孙子级
       if (expandFlag) {
-        this[treeId].expandNode(treeNode, expandFlag, false, true, false);
+        this[treeId].expandNode(treeNode, expandFlag, false, false, false);
         if (treeNode.children && treeNode.children.length > 0) {
           treeNode.children.forEach(function(childNode) {
             self.expandAllChildren(treeId, childNode, expandFlag);
           });
         }
       } else {
-        this[treeId].expandNode(treeNode, expandFlag, true, true, false);
+        this[treeId].expandNode(treeNode, expandFlag, true, false, false);
       }
     }
   }
