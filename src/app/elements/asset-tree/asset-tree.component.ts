@@ -490,7 +490,7 @@ export class ElementAssetTreeComponent implements OnInit, OnDestroy {
   }
 
   filterApplicationsTree(keyword) {
-    if (!this.filterApplicationsTree) {
+    if (!this.applicationsTree) {
       return null;
     }
     function filterCallback(node: TreeNode) {
