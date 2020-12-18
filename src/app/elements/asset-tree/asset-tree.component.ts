@@ -419,13 +419,12 @@ export class ElementAssetTreeComponent implements OnInit, OnDestroy {
   }
 
   onRightClick(event, treeId, treeNode) {
-
+    if (!treeNode) {
+      return null;
+    }
     if (treeNode.id === 'myAssets') {
       this.showRootRMenu(event.clientX, event.clientY);
       return;
-    }
-    if (!treeNode || treeNode.isParent) {
-      return null;
     }
     if (treeNode.isParent) {
       this.expandAllChildren(treeId, treeNode, !treeNode.open);
