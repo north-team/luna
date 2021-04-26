@@ -256,9 +256,9 @@ export class ElementNavComponent implements OnInit {
   }
   getUrl() {
     this._http.get('/api/v1/settings/web-setting/').subscribe(result => {
-      this.WebSite = result['WEB_OFFICIAL_WEBSITE_URL'];
-      this.WebDocs = result['WEB_DOCS_URL'];
-      this.WebTechnicalSupport = result['WEB_TECHNICAL_SUPPORT_URL'];
+      this.WebSite = result['data']['WEB_OFFICIAL_WEBSITE_URL'];
+      this.WebDocs = result['data']['WEB_DOCS_URL'];
+      this.WebTechnicalSupport = result['data']['WEB_TECHNICAL_SUPPORT_URL'];
     }, error => console.log(error));
   }
 }
