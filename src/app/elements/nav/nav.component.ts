@@ -18,6 +18,9 @@ export class ElementNavComponent implements OnInit {
   navs: Array<Nav>;
   _asyncTree = false;
   viewList: Array<View>;
+  WebSite: string;
+  WebDocs: string;
+  WebTechnicalSupport: string;
 
   constructor(private _http: HttpService,
               private _logger: LogService,
@@ -32,6 +35,7 @@ export class ElementNavComponent implements OnInit {
   ngOnInit() {
     this.navs = this.getNav();
     this.viewList = this._viewSrv.viewList;
+    this.getUrl();
   }
 
   get treeLoadAsync() {
@@ -103,15 +107,15 @@ export class ElementNavComponent implements OnInit {
         break;
       }
       case 'Website': {
-        window.open('http://www.jumpserver.org');
+        window.open(this.WebSite);
         break;
       }
       case 'Document': {
-        window.open('http://docs.jumpserver.org/');
+        window.open(this.WebDocs);
         break;
       }
       case 'Support': {
-        window.open('https://market.aliyun.com/products/53690006/cmgj026011.html?spm=5176.730005.0.0.cY2io1');
+        window.open(this.WebTechnicalSupport);
         break;
       }
       case 'English': {
@@ -249,6 +253,13 @@ export class ElementNavComponent implements OnInit {
       if (result) {
       }
     });
+  }
+  getUrl() {
+    this._http.get('/api/v1/settings/web-setting/').subscribe(result => {
+      this.WebSite = result['WEB_OFFICIAL_WEBSITE_URL'];
+      this.WebDocs = result['WEB_DOCS_URL'];
+      this.WebTechnicalSupport = result['WEB_TECHNICAL_SUPPORT_URL'];
+    }, error => console.log(error));
   }
 }
 
